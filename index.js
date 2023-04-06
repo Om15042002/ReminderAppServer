@@ -3,6 +3,7 @@ const express = require("express");
 const bodyparser = require("body-parser");
 var cors = require("cors");
 const user = require("./authentication");
+const medicineschedule= require("./medicineschedules");
 // const task = require("./taskqueries");
 const cron = require("node-cron");
 const fs = require("fs");
@@ -22,6 +23,8 @@ app.get("/", (req, res) => {
 app.post("/adduser", user.createUser);
 app.get("/login", user.loginUser);
 
+
+app.post("/addmedicine", medicineschedule.addMedicineScheduleDetails);
 // app.get("/gettask", task.getTasks);
 // app.post("/addtask", task.createTask);
 // app.delete("/deletetask", task.deleteTask);
