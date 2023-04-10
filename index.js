@@ -25,6 +25,8 @@ app.get("/login", user.loginUser);
 
 
 app.post("/addmedicine", medicineschedule.addMedicineScheduleDetails);
+app.get("/getmedicineschedule", medicineschedule.getMedicineScheduleDetails);
+app.delete("/deletemedicineschedule", medicineschedule.deleteMedicineScheduleDetails);
 // app.get("/gettask", task.getTasks);
 // app.post("/addtask", task.createTask);
 // app.delete("/deletetask", task.deleteTask);
