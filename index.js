@@ -36,8 +36,8 @@ app.listen(3000, () => {
   console.log("listening to the port 3000...");
 });
 
-// cron.schedule("* * * * *", function () {
-//   console.log("---------------------");
-//   console.log("Running Cron Job");
-// });
+cron.schedule("* * * * *", function () {
+  console.log("---------------------");
+  console.log("Running Cron Job");
+});
 

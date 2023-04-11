@@ -159,116 +159,128 @@ const getMedicineScheduleDetails = (req, res) => {
   // console.log(insertUser);
   client.query(findmedicine, [userid], (err, response) => {
     if (!err) {
-      // console.log(response);
-      // res.setHeader('content-type', 'application/json');
-      let patientmedicine_id = response.rows;
-      let lastrecord = patientmedicine_id.length - 1;
-      for (let i = 0; i < response.rows.length; ++i) {
-        const findmedicinename =
-          "select medicinename from medicine where medicine_id = $1";
-        medicine_id.push(response.rows[i].medicine_id);
-        // console.log(insertUser);
-        client.query(
-          findmedicinename,
-          [response.rows[i].medicine_id],
-          (err, response) => {
-            if (!err) {
-              console.log(response);
-              // console.log(medicinenames)
-              // return res.status(200).json({ msg: "Success" });
-              medicinenames.push(response.rows[0].medicinename);
+      if (response.rowCount == 0) {
+        console.log("adsfdsf");
+        res.send({
+          data: null,
+          success: true,
+        });
+      } else {
+        // res.setHeader('content-type', 'application/json');
+        let patientmedicine_id = response.rows;
+        let lastrecord = patientmedicine_id.length - 1;
+        for (let i = 0; i < response.rows.length; ++i) {
+          const findmedicinename =
+            "select medicinename from medicine where medicine_id = $1";
+          medicine_id.push(response.rows[i].medicine_id);
+          // console.log(insertUser);
+          client.query(
+            findmedicinename,
+            [response.rows[i].medicine_id],
+            (err, response) => {
+              if (!err) {
+                console.log(response);
+                // console.log(medicinenames)
+                // return res.status(200).json({ msg: "Success" });
+                medicinenames.push(response.rows[0].medicinename);
 
-              const findmedicinescheduledetails =
-                "select patientmedicine_timephase.quantity,patientmedicine_timephase.remindertime,timephase.timephase from patientmedicine as patientmedicine inner join patientmedicine_timephase as patientmedicine_timephase on patientmedicine.patientmedicine_id =  patientmedicine_timephase.patientmedicine_id inner join timephase as timephase  on timephase.timephase_id  = patientmedicine_timephase.timephase_id where patientmedicine.patientmedicine_id = $1;";
-              // console.log(insertUser);
-              client.query(
-                findmedicinescheduledetails,
-                [patientmedicine_id[i].patientmedicine_id],
-                (err, response) => {
-                  if (!err) {
-                    console.log(response);
-                    let temp = {
-                      quantity: [],
-                      remindertime: [],
-                      timephase: [],
-                    };
-                    for (let i = 0; i < response.rows.length; ++i) {
-                      temp["quantity"].push(response.rows[i].quantity);
-                      temp["remindertime"].push(response.rows[i].remindertime);
-                      temp["timephase"].push(response.rows[i].timephase);
-                    }
-                    medicineData.push(temp);
-                    console.log(medicineData);
-                    const finddays =
-                      "select days.day_name from patientmedicine as patientmedicine inner join patientmedicine_days as patientmedicine_days on patientmedicine.patientmedicine_id =  patientmedicine_days.patientmedicine_id inner join days as days  on days.day_id  = patientmedicine_days.day_id where patientmedicine.patientmedicine_id=$1";
-                    //             // console.log(insertUser);
-                    client.query(
-                      finddays,
-                      [patientmedicine_id[i].patientmedicine_id],
-                      (err, response) => {
-                        if (!err) {
-                          // console.log(response.rows);
-                          let tempmedicinedays = {
-                            day_name: [],
-                          };
-                          for (let i = 0; i < response.rows.length; ++i) {
-                            tempmedicinedays["day_name"].push(
-                              response.rows[i].day_name
-                            );
-                          }
-
-                          medicinedays.push(tempmedicinedays);
-                          // console.log(medicinedays);
-                          data["days"] = medicinedays;
-                          data["medicine_id"] = medicine_id;
-                          (data["medicinenames"] = medicinenames),
-                            (data["otherdetails"] = medicineData);
-                          if (i == lastrecord)
-                            res.send({ data: data, success: true });
-                          // tempmedicinedays={
-                          //   "day_name":[]
-                          // }
-                        } else {
-                          // console.log(err);
-                          // return res.status(400).json({ msg: "failure" })
-                          res.send({
-                            message: "Could not fetch data",
-                            success: true,
-                          });
-                        }
-                        client.end;
+                const findmedicinescheduledetails =
+                  "select patientmedicine_timephase.quantity,patientmedicine_timephase.remindertime,timephase.timephase from patientmedicine as patientmedicine inner join patientmedicine_timephase as patientmedicine_timephase on patientmedicine.patientmedicine_id =  patientmedicine_timephase.patientmedicine_id inner join timephase as timephase  on timephase.timephase_id  = patientmedicine_timephase.timephase_id where patientmedicine.patientmedicine_id = $1;";
+                // console.log(insertUser);
+                client.query(
+                  findmedicinescheduledetails,
+                  [patientmedicine_id[i].patientmedicine_id],
+                  (err, response) => {
+                    if (!err) {
+                      console.log(response);
+                      let temp = {
+                        quantity: [],
+                        remindertime: [],
+                        timephase: [],
+                      };
+                      for (let i = 0; i < response.rows.length; ++i) {
+                        temp["quantity"].push(response.rows[i].quantity);
+                        temp["remindertime"].push(
+                          response.rows[i].remindertime
+                        );
+                        temp["timephase"].push(response.rows[i].timephase);
                       }
-                    );
-                    //         }
-                    //         console.log(medicinedays);
-                    //         // return res.status(200).json({ msg: "Success" });
-                    //     }
-                    //     else {
-                    //         // console.log(err);
-                    //         // return res.status(400).json({ msg: "failure" })
-                    //     }
-                    //     client.end;
-                    // })
-                  } else {
-                    // console.log(err);
-                    // return res.status(400).json({ msg: "failure" })
-                    res.send({
-                      message: "Could not fetch data",
-                      success: true,
-                    });
+                      medicineData.push(temp);
+                      console.log(medicineData);
+                      const finddays =
+                        "select days.day_name from patientmedicine as patientmedicine inner join patientmedicine_days as patientmedicine_days on patientmedicine.patientmedicine_id =  patientmedicine_days.patientmedicine_id inner join days as days  on days.day_id  = patientmedicine_days.day_id where patientmedicine.patientmedicine_id=$1";
+                      //             // console.log(insertUser);
+                      client.query(
+                        finddays,
+                        [patientmedicine_id[i].patientmedicine_id],
+                        (err, response) => {
+                          if (!err) {
+                            // console.log(response.rows);
+                            let tempmedicinedays = {
+                              day_name: [],
+                            };
+                            for (let i = 0; i < response.rows.length; ++i) {
+                              tempmedicinedays["day_name"].push(
+                                response.rows[i].day_name
+                              );
+                            }
+
+                            medicinedays.push(tempmedicinedays);
+                            // console.log(medicinedays);
+                            data["days"] = medicinedays;
+                            data["medicine_id"] = medicine_id;
+                            (data["medicinenames"] = medicinenames),
+                              (data["otherdetails"] = medicineData);
+                            if (i == lastrecord) {
+                              console.log(data);
+                              res.send({ data: data, success: true });
+                            }
+
+                            // tempmedicinedays={
+                            //   "day_name":[]
+                            // }
+                          } else {
+                            // console.log(err);
+                            // return res.status(400).json({ msg: "failure" })
+                            res.send({
+                              message: "Could not fetch data",
+                              success: true,
+                            });
+                          }
+                          client.end;
+                        }
+                      );
+                      //         }
+                      //         console.log(medicinedays);
+                      //         // return res.status(200).json({ msg: "Success" });
+                      //     }
+                      //     else {
+                      //         // console.log(err);
+                      //         // return res.status(400).json({ msg: "failure" })
+                      //     }
+                      //     client.end;
+                      // })
+                    } else {
+                      // console.log(err);
+                      // return res.status(400).json({ msg: "failure" })
+                      res.send({
+                        message: "Could not fetch data",
+                        success: true,
+                      });
+                    }
+                    client.end;
                   }
-                  client.end;
-                }
-              );
-            } else {
-              // reject(-1);
-              // console.log(err);
-              // return res.status(400).json({ msg: "failure" })
-              res.send({ message: "Could not fetch data", success: true });
+                );
+              } else {
+                // reject(-1);
+                // console.log(err);
+                // return res.status(400).json({ msg: "failure" })
+                res.send({ message: "Could not fetch data", success: true });
+              }
+              client.end;
             }
-            client.end;
-          }
-        );
+          );
+        }
       }
     } else {
       // console.log(err);
@@ -287,7 +299,7 @@ const deleteMedicineScheduleDetails = (req, res) => {
   client.query(findpatientmedicine, [userid, medicine_id], (err, response) => {
     if (!err) {
       console.log(response.rows);
-      let patientmedicine_id=response.rows[0].patientmedicine_id;
+      let patientmedicine_id = response.rows[0].patientmedicine_id;
       const deletefrompatientmedicine_days =
         "delete from patientmedicine_days where patientmedicine_id=$1";
       client.query(
