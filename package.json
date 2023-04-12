@@ -13,9 +13,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fast-two-sms": "^3.0.0",
     "get-json": "^1.0.1",
     "jsonwebtoken": "^9.0.0",
     "node-cron": "^3.0.0",
-    "pg": "^8.10.0"
+    "pg": "^8.10.0",
+    "twilio": "^4.10.0"
   }
 }
