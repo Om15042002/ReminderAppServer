@@ -4,10 +4,11 @@ var cors = require("cors");
 const user = require("./authentication");
 const medicineschedule = require("./medicineschedules");
 const checkForSMS=require('./medicineReminder');
+const userquery=require('./userqueries');
 const cron = require("node-cron");
 const fs = require("fs");
 const accountSid = "ACef0850b19f866be90c01e5c0844b901d";
-const authToken = "c6ae18f3af496b66a306c84c1d06437d";
+const authToken = "a6dac5b078fedd15ac934b84a5b74a7e";
 const smsclient = require("twilio")(accountSid, authToken);
 
 
@@ -32,6 +33,12 @@ app.delete(
   "/deletemedicineschedule",
   medicineschedule.deleteMedicineScheduleDetails
 );
+
+app.post("/addquery", userquery.addquery);
+
+
+
+
 // app.get("/gettask", task.getTasks);
 // app.post("/addtask", task.createTask);
 // app.delete("/deletetask", task.deleteTask);
@@ -54,5 +61,5 @@ app.listen(3000, () => {
 //         .then((message) => console.log(message.sid))
 setInterval(() => {
   checkForSMS.sendMessage();
-}, 60000);
+}, 10000);
 

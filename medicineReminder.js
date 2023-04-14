@@ -1,6 +1,6 @@
 
 const accountSid = "ACef0850b19f866be90c01e5c0844b901d";
-const authToken = "c6ae18f3af496b66a306c84c1d06437d";
+const authToken = "a6dac5b078fedd15ac934b84a5b74a7e";
 const smsclient = require("twilio")(accountSid, authToken);
 
 const { response } = require("express");
@@ -22,9 +22,7 @@ const sendMessage = () => {
     if (!err) {
       if (response.rowCount == 0) {
         console.log("no data for schedule in db");
-    
       } else {
-
         console.log(response.rows);
         let patientmedicine_id = response.rows;
         let lastrecord = patientmedicine_id.length - 1;
@@ -38,7 +36,7 @@ const sendMessage = () => {
             inner join patient as patient on patient.patient_id = patientmedicine.patient_id 
             inner join medicine as medicine on medicine.medicine_id=patientmedicine.medicine_id 
             where patientmedicine_timephase.remindertime = $1 and days.day_name = $2 ;`;
-
+            
             client.query(
               findmedicinescheduledetails,
               [dt.getHours(),days[dt.getDay()] ],
